@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "type": "truefalse",
+        "question": "JavaScript is executed in the browser.",
+        "answer": true,
+        "points": 5
+    },
+    {
+        "id": 2,
+        "type": "multiple",
+        "question": "Which of the following is NOT a programming language?",
+        "options": ["Python", "HTML", "Java", "C++"],
+        "answer": "HTML",
+        "points": 10
+    },
+    {
+        "id": 3,
+        "type": "fill",
+        "question": "CSS stands for ______ Style Sheets.",
+        "answer": "Cascading",
+        "points": 5
+    },
+    {
+        "id": 4,
+        "type": "matching",
+        "question": "Match each technology with its role:",
+        "pairs": {
+            "HTML": "Structure",
+            "CSS": "Styling",
+            "JavaScript": "Logic"
+        },
+        "points": 15
+    }
+]
