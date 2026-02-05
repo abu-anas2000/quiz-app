@@ -1,51 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Quiz App</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam System</title>
+<link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<div class="quiz-container">
+<div class="container">
 
-    <h1>Quiz App</h1>
+<h2>Exam System</h2>
 
-    <!-- STUDENT INFO -->
-    <div id="studentSection">
-        <input type="text" id="studentName" placeholder="Enter Student Name" />
-        <button id="startQuiz">Start Quiz</button>
-        <p id="nameError" style="color:red"></p>
-    </div>
+<!-- STUDENT -->
+<div id="startSection">
+<input id="studentName" placeholder="Student Name">
+<select id="subjectSelect">
+<option value="">Select Subject</option>
+<option value="html">HTML</option>
+<option value="css">CSS</option>
+<option value="javascript">JavaScript</option>
+</select>
+<button id="startBtn">Start Exam</button>
+<p id="error"></p>
+</div>
 
-    <!-- QUIZ AREA -->
-    <div id="quizArea" style="display:none;">
+<!-- EXAM -->
+<div id="examSection" style="display:none">
 
-        <select id="subjectSelect">
-            <option value="">-- Select Subject --</option>
-            <option value="html">HTML</option>
-            <option value="css">CSS</option>
-            <option value="javascript">JavaScript</option>
-        </select>
+<div class="topbar">
+<span id="progress"></span>
+<span id="timer"></span>
+</div>
 
-        <div id="quiz"></div>
+<div id="questionNav"></div>
 
-        <div class="nav-buttons">
-            <button id="prevBtn">Previous</button>
-            <button id="nextBtn">Next</button>
-        </div>
+<div id="quiz"></div>
 
-        <button id="submitBtn">Submit Quiz</button>
+<div class="nav">
+<button id="prevBtn">Previous</button>
+<button id="nextBtn">Next</button>
+</div>
 
-        <div id="result"></div>
+<button id="submitBtn">Submit Exam</button>
 
-    </div>
+<div id="result"></div>
 
 </div>
 
+</div>
 
 <script src="app.js"></script>
 </body>
 </html>
-
