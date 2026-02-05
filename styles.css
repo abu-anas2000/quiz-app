@@ -82,3 +82,9 @@ button:hover {
         flex-direction: column;
     }
 }
+
+.nav-buttons {
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
