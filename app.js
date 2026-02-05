@@ -156,19 +156,6 @@ updateNavUI();
 /* SAVE ANSWER */
 
 function saveAnswer(){
-  if(q.type==="matching"){
-
-    let obj = {};
-
-    document.querySelectorAll("[data-key]").forEach(el=>{
-        obj[el.dataset.key] = el.value;
-    });
-
-    answers[current] = obj;
-  }
-}
-
-function old_saveAnswer(){
 
 const q=quizData[current];
 
@@ -183,8 +170,8 @@ answers[current]=document.getElementById("fillInput").value;
 
 if(q.type==="matching"){
 let obj={};
-document.querySelectorAll("[data-key]").forEach(i=>{
-obj[i.dataset.key]=i.value;
+document.querySelectorAll("[data-key]").forEach(el=>{
+obj[el.dataset.key]=el.value;
 });
 answers[current]=obj;
 }
@@ -276,4 +263,5 @@ resultDiv.innerHTML=`${student}, Score: ${score.toFixed(2)} / ${total}`;
 localStorage.removeItem("examAnswers");
 
 }
+
 
