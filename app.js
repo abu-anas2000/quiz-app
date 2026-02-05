@@ -1,192 +1,242 @@
-let quizData = [];
-let currentQuestion = 0;
-let studentName = "";
-let answers = {};
+let quizData=[];
+let answers={};
+let current=0;
+let student="";
+let timerInterval;
+let remainingTime=300; // seconds (5 minutes)
 
-const quizDiv = document.getElementById("quiz");
-const resultDiv = document.getElementById("result");
+const startBtn=document.getElementById("startBtn");
+const examSection=document.getElementById("examSection");
+const startSection=document.getElementById("startSection");
+const quizDiv=document.getElementById("quiz");
+const resultDiv=document.getElementById("result");
+const progress=document.getElementById("progress");
+const questionNav=document.getElementById("questionNav");
 
-const startBtn = document.getElementById("startQuiz");
-const nameInput = document.getElementById("studentName");
-const nameError = document.getElementById("nameError");
+/* START EXAM */
 
-const quizArea = document.getElementById("quizArea");
-const studentSection = document.getElementById("studentSection");
+startBtn.onclick=()=>{
 
-const subjectSelect = document.getElementById("subjectSelect");
+const name=document.getElementById("studentName").value.trim();
+const subject=document.getElementById("subjectSelect").value;
 
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const submitBtn = document.getElementById("submitBtn");
-
-/* ================= START QUIZ ================= */
-
-startBtn.addEventListener("click", () => {
-
-    if (!nameInput.value.trim()) {
-        nameError.innerText = "Student name is required!";
-        return;
-    }
-
-    studentName = nameInput.value.trim();
-
-    studentSection.style.display = "none";
-    quizArea.style.display = "block";
-});
-
-/* ================= LOAD SUBJECT ================= */
-
-subjectSelect.addEventListener("change", () => {
-
-    fetch(`quizzes/${subjectSelect.value}.json`)
-        .then(res => res.json())
-        .then(data => {
-
-            quizData = data;
-            answers = {};
-            currentQuestion = 0;
-
-            showQuestion();
-
-        });
-});
-
-/* ================= SHOW ONE QUESTION ================= */
-
-function showQuestion() {
-
-    const q = quizData[currentQuestion];
-
-    let html = `<h3>${currentQuestion+1}. ${q.question} (${q.points} pts)</h3>`;
-
-    if (q.type === "truefalse") {
-
-        ["true","false"].forEach(val => {
-            const checked = answers[currentQuestion] == val ? "checked":"";
-            html += `<label><input type="radio" name="q" value="${val}" ${checked}> ${val}</label>`;
-        });
-    }
-
-    if (q.type === "multiple") {
-
-        q.options.forEach(opt => {
-            const checked = answers[currentQuestion] == opt ? "checked":"";
-            html += `<label><input type="radio" name="q" value="${opt}" ${checked}> ${opt}</label>`;
-        });
-    }
-
-    if (q.type === "fill") {
-
-        const val = answers[currentQuestion] || "";
-        html += `<input type="text" id="fillInput" value="${val}">`;
-    }
-
-    if (q.type === "matching") {
-
-        Object.keys(q.pairs).forEach(key => {
-
-            const val = answers[currentQuestion]?.[key] || "";
-
-            html += `
-            <div class="match-row">
-                <span>${key}</span>
-                <input type="text" data-key="${key}" value="${val}">
-            </div>`;
-        });
-    }
-
-    quizDiv.innerHTML = html;
+if(!name || !subject){
+document.getElementById("error").innerText="Enter name and subject";
+return;
 }
 
-/* ================= SAVE ANSWER ================= */
+student=name;
 
-function saveAnswer() {
+fetch(`quizzes/${subject}.json`)
+.then(r=>r.json())
+.then(data=>{
 
-    const q = quizData[currentQuestion];
+quizData=data;
 
-    if (q.type === "truefalse" || q.type === "multiple") {
+loadSaved();
 
-        const selected = document.querySelector('input[name="q"]:checked');
-        if (selected) answers[currentQuestion] = selected.value;
-    }
+startSection.style.display="none";
+examSection.style.display="block";
 
-    if (q.type === "fill") {
+createNav();
+showQuestion();
+startTimer();
 
-        answers[currentQuestion] = document.getElementById("fillInput").value;
-    }
+});
 
-    if (q.type === "matching") {
+};
 
-        let obj = {};
+/* TIMER */
 
-        document.querySelectorAll("[data-key]").forEach(input => {
-            obj[input.dataset.key] = input.value;
-        });
+function startTimer(){
 
-        answers[currentQuestion] = obj;
-    }
+timerInterval=setInterval(()=>{
+
+remainingTime--;
+
+document.getElementById("timer").innerText=`Time: ${remainingTime}s`;
+
+if(remainingTime<=0){
+clearInterval(timerInterval);
+submitExam();
 }
 
-/* ================= NAVIGATION ================= */
+},1000);
 
-nextBtn.onclick = () => {
+}
 
-    saveAnswer();
+/* NAV BUTTONS */
 
-    if (currentQuestion < quizData.length - 1) {
-        currentQuestion++;
-        showQuestion();
-    }
+function createNav(){
+
+questionNav.innerHTML="";
+
+quizData.forEach((q,i)=>{
+
+let btn=document.createElement("button");
+btn.className="qbtn";
+btn.innerText=i+1;
+
+btn.onclick=()=>{
+saveAnswer();
+current=i;
+showQuestion();
 };
 
-prevBtn.onclick = () => {
+questionNav.appendChild(btn);
 
-    saveAnswer();
+});
 
-    if (currentQuestion > 0) {
-        currentQuestion--;
-        showQuestion();
-    }
+}
+
+/* SHOW QUESTION */
+
+function showQuestion(){
+
+const q=quizData[current];
+
+progress.innerText=`Question ${current+1} / ${quizData.length}`;
+
+let html=`<h3>${q.question}</h3>`;
+
+if(q.type==="truefalse"){
+["true","false"].forEach(v=>{
+html+=`<label><input type="radio" name="q" value="${v}" ${answers[current]==v?"checked":""}>${v}</label>`;
+});
+}
+
+if(q.type==="multiple"){
+q.options.forEach(opt=>{
+html+=`<label><input type="radio" name="q" value="${opt}" ${answers[current]==opt?"checked":""}>${opt}</label>`;
+});
+}
+
+if(q.type==="fill"){
+html+=`<input id="fillInput" value="${answers[current]||""}">`;
+}
+
+if(q.type==="matching"){
+Object.keys(q.pairs).forEach(k=>{
+html+=`<div class="match-row">
+<span>${k}</span>
+<input data-key="${k}" value="${answers[current]?.[k]||""}">
+</div>`;
+});
+}
+
+quizDiv.innerHTML=html;
+
+updateNavUI();
+
+}
+
+/* SAVE ANSWER */
+
+function saveAnswer(){
+
+const q=quizData[current];
+
+if(q.type==="truefalse"||q.type==="multiple"){
+const sel=document.querySelector('input[name="q"]:checked');
+if(sel) answers[current]=sel.value;
+}
+
+if(q.type==="fill"){
+answers[current]=document.getElementById("fillInput").value;
+}
+
+if(q.type==="matching"){
+let obj={};
+document.querySelectorAll("[data-key]").forEach(i=>{
+obj[i.dataset.key]=i.value;
+});
+answers[current]=obj;
+}
+
+localStorage.setItem("examAnswers",JSON.stringify(answers));
+
+}
+
+/* LOAD SAVED */
+
+function loadSaved(){
+
+const saved=localStorage.getItem("examAnswers");
+if(saved) answers=JSON.parse(saved);
+
+}
+
+/* NAVIGATION BUTTONS */
+
+document.getElementById("nextBtn").onclick=()=>{
+saveAnswer();
+if(current<quizData.length-1){current++;showQuestion();}
 };
 
-/* ================= SUBMIT QUIZ ================= */
-
-submitBtn.onclick = () => {
-
-    saveAnswer();
-
-    let score = 0;
-    let total = 0;
-
-    quizData.forEach((q,index)=>{
-
-        total += q.points;
-
-        const ans = answers[index];
-
-        if (!ans) return;
-
-        if(q.type==="truefalse" && ans===q.answer.toString())
-            score+=q.points;
-
-        if(q.type==="multiple" && ans===q.answer)
-            score+=q.points;
-
-        if(q.type==="fill" && ans.toLowerCase()===q.answer.toLowerCase())
-            score+=q.points;
-
-        if(q.type==="matching"){
-
-            const keys = Object.keys(q.pairs);
-            const partial = q.points / keys.length;
-
-            keys.forEach(k=>{
-                if(ans[k]?.toLowerCase()===q.pairs[k].toLowerCase())
-                    score+=partial;
-            });
-        }
-
-    });
-
-    resultDiv.innerHTML = `${studentName}, your score is ${score.toFixed(2)} / ${total}`;
+document.getElementById("prevBtn").onclick=()=>{
+saveAnswer();
+if(current>0){current--;showQuestion();}
 };
+
+/* NAV UI */
+
+function updateNavUI(){
+
+document.querySelectorAll(".qbtn").forEach((btn,i)=>{
+
+btn.classList.remove("current","answered");
+
+if(i===current) btn.classList.add("current");
+
+if(answers[i]) btn.classList.add("answered");
+
+});
+
+}
+
+/* SUBMIT */
+
+document.getElementById("submitBtn").onclick=submitExam;
+
+function submitExam(){
+
+saveAnswer();
+
+clearInterval(timerInterval);
+
+let score=0;
+let total=0;
+
+quizData.forEach((q,i)=>{
+
+total+=q.points;
+
+const ans=answers[i];
+
+if(!ans) return;
+
+if(q.type==="truefalse" && ans===q.answer.toString()) score+=q.points;
+
+if(q.type==="multiple" && ans===q.answer) score+=q.points;
+
+if(q.type==="fill" && ans.toLowerCase()===q.answer.toLowerCase()) score+=q.points;
+
+if(q.type==="matching"){
+
+const keys=Object.keys(q.pairs);
+const partial=q.points/keys.length;
+
+keys.forEach(k=>{
+if(ans[k]?.toLowerCase()===q.pairs[k].toLowerCase())
+score+=partial;
+});
+
+}
+
+});
+
+resultDiv.innerHTML=`${student}, Score: ${score.toFixed(2)} / ${total}`;
+
+localStorage.removeItem("examAnswers");
+
+}
