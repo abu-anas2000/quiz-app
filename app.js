@@ -116,12 +116,35 @@ html+=`<input id="fillInput" value="${answers[current]||""}">`;
 }
 
 if(q.type==="matching"){
-Object.keys(q.pairs).forEach(k=>{
-html+=`<div class="match-row">
-<span>${k}</span>
-<input data-key="${k}" value="${answers[current]?.[k]||""}">
-</div>`;
-});
+
+    const leftItems = Object.keys(q.pairs);
+    const rightItems = Object.values(q.pairs);
+
+    // Shuffle dropdown options
+    const shuffled = [...rightItems].sort(()=>Math.random()-0.5);
+
+    leftItems.forEach(left => {
+
+        const selectedValue = answers[current]?.[left] || "";
+
+        html += `
+        <div class="match-row">
+
+            <span>${left}</span>
+
+            <select data-key="${left}">
+                <option value="">Select...</option>
+
+                ${shuffled.map(opt => `
+                    <option value="${opt}" ${selectedValue===opt?"selected":""}>
+                        ${opt}
+                    </option>
+                `).join("")}
+
+            </select>
+
+        </div>`;
+    });
 }
 
 quizDiv.innerHTML=html;
@@ -133,6 +156,19 @@ updateNavUI();
 /* SAVE ANSWER */
 
 function saveAnswer(){
+  if(q.type==="matching"){
+
+    let obj = {};
+
+    document.querySelectorAll("[data-key]").forEach(el=>{
+        obj[el.dataset.key] = el.value;
+    });
+
+    answers[current] = obj;
+  }
+}
+
+function old_saveAnswer(){
 
 const q=quizData[current];
 
@@ -240,3 +276,4 @@ resultDiv.innerHTML=`${student}, Score: ${score.toFixed(2)} / ${total}`;
 localStorage.removeItem("examAnswers");
 
 }
+
