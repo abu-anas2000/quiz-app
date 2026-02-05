@@ -1,0 +1,24 @@
+[
+{
+"type":"truefalse",
+"question":"HTML is markup language",
+"answer":true,
+"points":5
+},
+{
+"type":"fill",
+"question":"HTML stands for ______ Markup Language",
+"answer":"HyperText",
+"points":5
+},
+{
+"type":"matching",
+"question":"Match:",
+"pairs":{
+"HTML":"Structure",
+"CSS":"Style",
+"JavaScript":"Logic"
+},
+"points":15
+}
+]
