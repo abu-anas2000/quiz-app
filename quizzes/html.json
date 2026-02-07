@@ -1,24 +1,32 @@
 [
-{
-"type":"truefalse",
-"question":"HTML is markup language",
-"answer":true,
-"points":5
-},
-{
-"type":"fill",
-"question":"HTML stands for ______ Markup Language",
-"answer":"HyperText",
-"points":5
-},
-{
-"type":"matching",
-"question":"Match:",
-"pairs":{
-"HTML":"Structure",
-"CSS":"Style",
-"JavaScript":"Logic"
-},
-"points":15
-}
+  {
+    "type":"truefalse",
+    "question":"HTML is markup language",
+    "answer":true,
+    "points":5
+  },
+  {
+    "type":"fill",
+    "question":"HTML stands for ______ Markup Language",
+    "answer":"HyperText",
+    "points":5
+  },
+  {
+    "type":"matching",
+    "question":"Match:",
+    "pairs":
+    {
+      "HTML":"Structure",
+      "CSS":"Style",
+      "JavaScript":"Logic"
+    },
+    "points":15
+  },
+  {
+    "type": "multiple",
+    "question": "Which language runs in the browser?",
+    "options": ["Java", "C#", "JavaScript", "Python"],
+    "answer": "JavaScript",
+    "points": 10
+  }
 ]
