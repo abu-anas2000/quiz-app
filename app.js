@@ -182,6 +182,17 @@ function saveAnswer(){
 
 const q=quizData[current];
 
+
+    if(q.type==="multiple"){
+
+    const selected = document.querySelector('input[name="q"]:checked');
+
+    if(selected)
+        answers[current] = selected.value;
+}
+
+    
+
 if(q.type==="truefalse"||q.type==="multiple"){
 const sel=document.querySelector('input[name="q"]:checked');
 if(sel) answers[current]=sel.value;
@@ -261,6 +272,10 @@ const ans=answers[i];
 
 if(!ans) return;
 
+
+    if(q.type==="multiple" && ans===q.answer)    score+=q.points;
+
+
 if(q.type==="truefalse" && ans===q.answer.toString()) score+=q.points;
 
 if(q.type==="multiple" && ans===q.answer) score+=q.points;
@@ -286,6 +301,7 @@ resultDiv.innerHTML=`${student}, Score: ${score.toFixed(2)} / ${total}`;
 localStorage.removeItem("examAnswers");
 
 }
+
 
 
 
