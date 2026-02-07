@@ -99,6 +99,29 @@ progress.innerText=`Question ${current+1} / ${quizData.length}`;
 
 let html=`<h3>${q.question}</h3>`;
 
+
+
+
+    /* MULTIPLE CHOICE */
+
+if(q.type==="multiple"){
+
+    q.options.forEach(opt => {
+
+        const checked = answers[current] === opt ? "checked" : "";
+
+        html += `
+        <label>
+            <input type="radio" name="q" value="${opt}" ${checked}>
+            ${opt}
+        </label>`;
+    });
+}
+
+
+
+
+    
 if(q.type==="truefalse"){
 ["true","false"].forEach(v=>{
 html+=`<label><input type="radio" name="q" value="${v}" ${answers[current]==v?"checked":""}>${v}</label>`;
@@ -263,5 +286,6 @@ resultDiv.innerHTML=`${student}, Score: ${score.toFixed(2)} / ${total}`;
 localStorage.removeItem("examAnswers");
 
 }
+
 
 
