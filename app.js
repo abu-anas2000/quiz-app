@@ -102,21 +102,7 @@ let html=`<h3>${q.question}</h3>`;
 
 
 
-    /* MULTIPLE CHOICE */
 
-if(q.type==="multiple"){
-
-    q.options.forEach(opt => {
-
-        const checked = answers[current] === opt ? "checked" : "";
-
-        html += `
-        <label>
-            <input type="radio" name="q" value="${opt}" ${checked}>
-            ${opt}
-        </label>`;
-    });
-}
 
 
 
@@ -301,6 +287,7 @@ resultDiv.innerHTML=`${student}, Score: ${score.toFixed(2)} / ${total}`;
 localStorage.removeItem("examAnswers");
 
 }
+
 
 
 
